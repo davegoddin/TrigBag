@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/NearFragment">
+    <fragment
+        android:id="@+id/NearFragment"
+        android:name="net.davegoddin.trigbag.NearFragment"
+        android:label="Near me"
+        tools:layout="@layout/fragment_near" >
+        <action
+            android:id="@+id/action_NearFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/SearchFragment"
+        android:name="net.davegoddin.trigbag.SearchFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_SearchFragment_to_detailFragment"
+            app:destination="@id/detailFragment"
+            app:enterAnim="@anim/from_bottom" />
+    </fragment>
+    <fragment
+        android:id="@+id/TrigsFragment"
+        android:name="net.davegoddin.trigbag.TrigsFragment"
+        android:label="My trigs"
+        tools:layout="@layout/fragment_trigs" >
+        <action
+            android:id="@+id/action_TrigsFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="net.davegoddin.trigbag.DetailFragment"
+        android:label="fragment_detail"
+        tools:layout="@layout/fragment_detail" >
+        <action
+            android:id="@+id/action_detailFragment_to_SearchFragment"
+            app:destination="@id/SearchFragment" />
+        <action
+            android:id="@+id/action_detailFragment_to_NearFragment"
+            app:destination="@id/NearFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/NearFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_detailFragment_to_TrigsFragment"
+            app:destination="@id/TrigsFragment"
+            app:popUpTo="@id/TrigsFragment" />
+    </fragment>
+</navigation>

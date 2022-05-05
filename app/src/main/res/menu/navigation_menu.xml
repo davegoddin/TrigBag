@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Near me"
+        android:id="@+id/NearFragment"
+        android:icon="@drawable/ic_near"/>
+    <item android:title="Search"
+        android:id="@+id/SearchFragment"
+        android:icon="@drawable/ic_search"/>
+    <item android:title="My trigs"
+        android:id="@+id/TrigsFragment"
+        android:icon="@drawable/ic_trig_icon"/>
+</menu>
