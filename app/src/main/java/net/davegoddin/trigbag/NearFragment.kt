@@ -10,18 +10,22 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
 import net.davegoddin.trigbag.data.AppDatabase
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.maps.android.SphericalUtil
 import kotlinx.coroutines.*
+import net.davegoddin.trigbag.adapter.TrigListItemAdapter
 import net.davegoddin.trigbag.model.TrigPoint
+import net.davegoddin.trigbag.model.TrigPointDisplay
 import net.davegoddin.trigbag.model.Visit
 import net.davegoddin.trigbag.viewmodel.LocationViewModel
-import java.util.*
 
 class NearFragment : Fragment() {
     private val locationViewModel: LocationViewModel by activityViewModels()
+    private var nearbyPoints = mutableListOf<TrigPointDisplay>()
+    private lateinit var adapter : TrigListItemAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +51,7 @@ class NearFragment : Fragment() {
     }
 
 
-    private fun getNearbyPoints(location: Location) : SortedMap<TrigPoint, List<Visit>>?
+    private fun getNearbyPoints(location: Location)
     {
         val db = AppDatabase.getInstance(requireContext())
         var points : Map<TrigPoint, List<Visit>>
@@ -67,15 +71,24 @@ class NearFragment : Fragment() {
             // sort list by distance to current location
             var sortedPoints = points.toSortedMap(compareBy<TrigPoint> { SphericalUtil.computeDistanceBetween(currentLatLng, LatLng(it.latitude, it.longitude)) })
 
-            sortedPoints.forEach {
-                Log.d("Points", "${it.key.name}: ${SphericalUtil.computeDistanceBetween(currentLatLng, LatLng(it.key.latitude, it.key.longitude))}")
-            }
+            val displayPoints = sortedPoints.map { TrigPointDisplay(it.key, it.value, SphericalUtil.computeDistanceBetween(currentLatLng, LatLng(it.key.latitude, it.key.longitude)))}
 
-            return sortedPoints
+
+            nearbyPoints.clear()
+            nearbyPoints.addAll(displayPoints)
+            adapter.notifyDataSetChanged()
+
         }
 
-        //fallback, return null
-        return null
+
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        var recyclerView = view.findViewById<RecyclerView>(R.id.recyclerNear)
+        adapter = TrigListItemAdapter(this, nearbyPoints)
+        recyclerView.adapter = adapter
 
     }
 
