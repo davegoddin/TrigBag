@@ -2,11 +2,11 @@ package net.davegoddin.trigbag
 
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -17,9 +17,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.maps.android.SphericalUtil
 import kotlinx.coroutines.*
 import net.davegoddin.trigbag.adapter.TrigListItemAdapter
-import net.davegoddin.trigbag.model.TrigPoint
 import net.davegoddin.trigbag.model.TrigPointDisplay
-import net.davegoddin.trigbag.model.Visit
 import net.davegoddin.trigbag.viewmodel.LocationViewModel
 
 class NearFragment : Fragment() {
@@ -92,6 +90,16 @@ class NearFragment : Fragment() {
         recyclerView.adapter = adapter
 
     }
+
+//    override fun onResume() {
+//        super.onResume()
+//        (requireActivity() as AppCompatActivity).supportActionBar?.hide()
+//    }
+//
+//    override fun onStop() {
+//        super.onStop()
+//        (requireActivity() as AppCompatActivity).supportActionBar?.show()
+//    }
 
 
 }

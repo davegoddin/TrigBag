@@ -7,8 +7,8 @@
     <fragment
         android:id="@+id/NearFragment"
         android:name="net.davegoddin.trigbag.NearFragment"
-        android:label="Near me"
-        tools:layout="@layout/fragment_near" >
+        android:label="Nearby"
+        tools:layout="@layout/fragment_near">
         <action
             android:id="@+id/action_NearFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
@@ -24,10 +24,10 @@
             app:enterAnim="@anim/from_bottom" />
     </fragment>
     <fragment
-        android:id="@+id/TrigsFragment"
-        android:name="net.davegoddin.trigbag.TrigsFragment"
-        android:label="My trigs"
-        tools:layout="@layout/fragment_trigs" >
+        android:id="@+id/LogFragment"
+        android:name="net.davegoddin.trigbag.LogFragment"
+        android:label="Log"
+        tools:layout="@layout/fragment_log">
         <action
             android:id="@+id/action_TrigsFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
@@ -39,7 +39,9 @@
         tools:layout="@layout/fragment_detail" >
         <action
             android:id="@+id/action_detailFragment_to_SearchFragment"
-            app:destination="@id/SearchFragment" />
+            app:destination="@id/SearchFragment"
+            app:popUpTo="@id/SearchFragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_detailFragment_to_NearFragment"
             app:destination="@id/NearFragment"
@@ -48,7 +50,7 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_detailFragment_to_TrigsFragment"
-            app:destination="@id/TrigsFragment"
-            app:popUpTo="@id/TrigsFragment" />
+            app:destination="@id/LogFragment"
+            app:popUpTo="@id/LogFragment" />
     </fragment>
 </navigation>

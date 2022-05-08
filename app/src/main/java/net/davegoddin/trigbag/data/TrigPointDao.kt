@@ -12,35 +12,20 @@ import net.davegoddin.trigbag.model.Visit
 
 @Dao
 interface TrigPointDao {
-    @Query("SELECT * FROM TrigPoint" +
-            " LEFT JOIN Visit on TrigPoint.id = Visit.id")
-    suspend fun getAll(): Map<TrigPoint, List<Visit>>
 
-    @Query("SELECT * FROM TrigPoint" +
-            " LEFT JOIN Visit on TrigPoint.id = Visit.id" +
-            " LIMIT :number")
-    suspend fun getRows(number: Int): Map<TrigPoint, List<Visit>>
-
-    @Query("SELECT * FROM TrigPoint" +
-            " LEFT JOIN Visit on TrigPoint.id = Visit.id" +
-            " WHERE TrigPoint.id = :id")
-    suspend fun getById(id: Int) : Map<TrigPoint, List<Visit>>
-
-    @Query("SELECT * FROM TrigPoint" +
-            " LEFT JOIN Visit on TrigPoint.id = Visit.id" +
-            " WHERE name LIKE :searchTerm OR country LIKE :searchTerm")
-    suspend fun search(searchTerm: String) : Map<TrigPoint, List<Visit>>
+    @Transaction
+    @Query("SELECT * FROM TrigPoint")
+    suspend fun getAll() : List<TrigPointDisplay>
 
     @Transaction
     @Query("SELECT * FROM TrigPoint" +
             " WHERE latitude <= :neLat AND latitude >= :swLat AND longitude <= :neLong AND longitude >= :swLong AND condition != 'Moved'")
     suspend fun getWithinBounds(neLat: Double, neLong: Double, swLat: Double, swLong: Double) : List<TrigPointDisplay>
 
+    @Transaction
+    @Query ("SELECT DISTINCT * FROM TrigPoint LEFT JOIN (SELECT DISTINCT trigPointId FROM Visit) WHERE trigPointId = id")
+    suspend fun getVisited() : List<TrigPointDisplay>
 
-//    @Query("SELECT * FROM TrigPoint" +
-//            " LEFT JOIN Visit on TrigPoint.id = Visit.id" +
-//            " WHERE latitude <= :neLat AND latitude >= :swLat AND longitude <= :neLong AND longitude >= :swLong AND condition != 'Moved'")
-//    suspend fun getWithinBounds(neLat: Double, neLong: Double, swLat: Double, swLong: Double) : Map<TrigPoint, List<Visit>>
 
     @Insert
     suspend fun insertAll(vararg points: TrigPoint)

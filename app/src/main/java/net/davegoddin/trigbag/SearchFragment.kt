@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.google.maps.android.clustering.ClusterManager
 import kotlinx.coroutines.*
 import net.davegoddin.trigbag.model.*
@@ -108,6 +109,8 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
     @SuppressLint("MissingPermission", "PotentialBehaviorOverride")
     override fun onMapReady(googleMap: GoogleMap) {
 
+        googleMap.clear()
+
         // initialise searchbar
         val searchBar : SearchView = requireActivity().findViewById(R.id.sch_search_searchbar)
         searchBar.queryHint = "Search for a postcode"
@@ -185,7 +188,9 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
 
         fun clickListener() = ClusterManager.OnClusterItemClickListener<TrigClusterItem>
         {
-            findNavController().navigate(R.id.action_SearchFragment_to_detailFragment)
+            val args : Bundle = Bundle()
+            args.putString("trigPointDisplay", Gson().toJson(it.item))
+            findNavController().navigate(R.id.action_SearchFragment_to_detailFragment, args)
             true
         }
 

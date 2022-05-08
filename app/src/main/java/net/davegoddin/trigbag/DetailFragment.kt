@@ -12,6 +12,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -76,6 +77,8 @@ class DetailFragment : Fragment() {
         // Inflate the layout for this fragment
         val navBar : BottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView)
         navBar.isVisible = false
+
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = trigPointDisplay.trigPoint.name
 
         return inflater.inflate(R.layout.fragment_detail, container, false)
     }

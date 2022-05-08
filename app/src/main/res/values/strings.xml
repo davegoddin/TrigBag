@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">TrigBag</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="log_title">Trig log</string>
     <string name="near_title">Nearby trig points</string>
+    <string-array name="log_sort_params">
+        <item>Last visited</item>
+        <item>Rating</item>
+    </string-array>
 </resources>
