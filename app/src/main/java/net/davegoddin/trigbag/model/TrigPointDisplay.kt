@@ -1,5 +1,15 @@
 package net.davegoddin.trigbag.model
 
-data class TrigPointDisplay (val trigPoint: TrigPoint, val visits: List<Visit>, val distance: Double) {
+import androidx.room.Embedded
+import androidx.room.Relation
+
+data class TrigPointDisplay(
+    @Embedded val trigPoint: TrigPoint,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "trigPointId"
+    )
+    val visits: MutableList<Visit>,
+    var distance: Double?) {
 
 }

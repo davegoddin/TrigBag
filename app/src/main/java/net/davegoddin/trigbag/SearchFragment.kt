@@ -27,10 +27,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.maps.android.clustering.ClusterManager
 import kotlinx.coroutines.*
-import net.davegoddin.trigbag.model.Postcode
-import net.davegoddin.trigbag.model.TrigClusterItem
-import net.davegoddin.trigbag.model.TrigPoint
-import net.davegoddin.trigbag.model.Visit
+import net.davegoddin.trigbag.model.*
 import net.davegoddin.trigbag.service.PostcodeService
 import net.davegoddin.trigbag.service.ServiceBuilder
 import retrofit2.Call
@@ -172,7 +169,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         })
 
 
-        var visiblePoints : Map<TrigPoint, List<Visit>>
+        var visiblePoints : List<TrigPointDisplay>
         currentZoom = 5.85f
 
         //initialise default camera position to centre on UK
@@ -210,7 +207,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
             }
 
             // convert to trigclusteritem
-            val trigClusterItems = visiblePoints.map {TrigClusterItem(it.toPair())}
+            val trigClusterItems = visiblePoints.map {TrigClusterItem(it)}
 
             // clear current items and replace with only visible items - performance upgrade
             clusterManager.clearItems()
@@ -225,15 +222,15 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         googleMap.isMyLocationEnabled = true
 
 
-        // initial set all points
-        GlobalScope.launch(Dispatchers.IO) {
-            val points = db.trigPointDao().getAll()
-            withContext(Dispatchers.Main) {
-                points.forEach {
-                    clusterManager.addItem(TrigClusterItem(it.toPair()))
-                }
-            }
-        }
+//        // initial set all points
+//        GlobalScope.launch(Dispatchers.IO) {
+//            val points = db.trigPointDao().getAll()
+//            withContext(Dispatchers.Main) {
+//                points.forEach {
+//                    clusterManager.addItem(TrigClusterItem(it))
+//                }
+//            }
+//        }
 
 
     }

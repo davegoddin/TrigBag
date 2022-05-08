@@ -54,7 +54,7 @@ class NearFragment : Fragment() {
     private fun getNearbyPoints(location: Location)
     {
         val db = AppDatabase.getInstance(requireContext())
-        var points : Map<TrigPoint, List<Visit>>
+        var points : List<TrigPointDisplay>
         val initialRange : Double = 7500.0
 
         if (location !=null)
@@ -69,13 +69,14 @@ class NearFragment : Fragment() {
             }
 
             // sort list by distance to current location
-            var sortedPoints = points.toSortedMap(compareBy<TrigPoint> { SphericalUtil.computeDistanceBetween(currentLatLng, LatLng(it.latitude, it.longitude)) })
+            var sortedPoints = points.sortedBy{ SphericalUtil.computeDistanceBetween(currentLatLng, LatLng(it.trigPoint.latitude, it.trigPoint.longitude)) }
 
-            val displayPoints = sortedPoints.map { TrigPointDisplay(it.key, it.value, SphericalUtil.computeDistanceBetween(currentLatLng, LatLng(it.key.latitude, it.key.longitude)))}
-
+            sortedPoints.forEach {
+                it.distance = SphericalUtil.computeDistanceBetween(currentLatLng, LatLng(it.trigPoint.latitude, it.trigPoint.longitude))
+            }
 
             nearbyPoints.clear()
-            nearbyPoints.addAll(displayPoints)
+            nearbyPoints.addAll(sortedPoints)
             adapter.notifyDataSetChanged()
 
         }
@@ -86,7 +87,7 @@ class NearFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var recyclerView = view.findViewById<RecyclerView>(R.id.recyclerNear)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerNear)
         adapter = TrigListItemAdapter(this, nearbyPoints)
         recyclerView.adapter = adapter
 

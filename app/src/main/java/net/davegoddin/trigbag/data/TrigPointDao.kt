@@ -3,8 +3,10 @@ package net.davegoddin.trigbag.data
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import com.google.android.gms.maps.model.LatLngBounds
 import net.davegoddin.trigbag.model.TrigPoint
+import net.davegoddin.trigbag.model.TrigPointDisplay
 import net.davegoddin.trigbag.model.Visit
 
 
@@ -29,10 +31,16 @@ interface TrigPointDao {
             " WHERE name LIKE :searchTerm OR country LIKE :searchTerm")
     suspend fun search(searchTerm: String) : Map<TrigPoint, List<Visit>>
 
+    @Transaction
     @Query("SELECT * FROM TrigPoint" +
-            " LEFT JOIN Visit on TrigPoint.id = Visit.id" +
             " WHERE latitude <= :neLat AND latitude >= :swLat AND longitude <= :neLong AND longitude >= :swLong AND condition != 'Moved'")
-    suspend fun getWithinBounds(neLat: Double, neLong: Double, swLat: Double, swLong: Double) : Map<TrigPoint, List<Visit>>
+    suspend fun getWithinBounds(neLat: Double, neLong: Double, swLat: Double, swLong: Double) : List<TrigPointDisplay>
+
+
+//    @Query("SELECT * FROM TrigPoint" +
+//            " LEFT JOIN Visit on TrigPoint.id = Visit.id" +
+//            " WHERE latitude <= :neLat AND latitude >= :swLat AND longitude <= :neLong AND longitude >= :swLong AND condition != 'Moved'")
+//    suspend fun getWithinBounds(neLat: Double, neLong: Double, swLat: Double, swLong: Double) : Map<TrigPoint, List<Visit>>
 
     @Insert
     suspend fun insertAll(vararg points: TrigPoint)

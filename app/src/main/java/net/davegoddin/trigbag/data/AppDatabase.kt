@@ -18,13 +18,13 @@ abstract class AppDatabase : RoomDatabase() {
 
         fun getInstance(context: Context): AppDatabase {
 //             dev code only - deletes existing DB
-            val databasesDir = File(context.dataDir.toString()+"/databases");
-            File(databasesDir, "trigpoint-db").delete();
+//            val databasesDir = File(context.dataDir.toString()+"/databases");
+//            File(databasesDir, "trigpoint-db").delete();
 
-            return buildDatabase(context)
-//            return instance ?: synchronized(this) {
-//                instance ?: buildDatabase(context).also { instance = it }
-//            }
+//            return buildDatabase(context)
+            return instance ?: synchronized(this) {
+                instance ?: buildDatabase(context).also { instance = it }
+            }
         }
 
         private fun buildDatabase(context: Context): AppDatabase {
