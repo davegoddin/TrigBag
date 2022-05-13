@@ -2,6 +2,11 @@ package net.davegoddin.trigbag
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -12,6 +17,9 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.PackageManagerCompat
 import androidx.core.view.isVisible
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.fragment.findNavController
@@ -35,6 +43,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
+import java.util.jar.Manifest
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -55,6 +64,8 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
     var currentZoom : Float? = null
 
     private lateinit var clusterManager : ClusterManager<TrigClusterItem>
+    private lateinit var searchBar : SearchView
+
 
 
 
@@ -66,6 +77,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    @SuppressLint("MissingPermission")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -78,6 +90,52 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
                 onMapReady(it)
             }
         )
+
+        searchBar = view.findViewById(R.id.sch_search_searchbar)
+
+
+        // check for internet connection and show/hide search bar
+        val connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        // check for initial connection on view creation
+        if (!hasInternetConnection(connectivityManager))
+        {
+            searchBar.isVisible = false
+        }
+
+        // register listener for change in connection
+        connectivityManager.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
+            // network has become available
+            override fun onAvailable(network: Network) {
+                super.onAvailable(network)
+
+                //confirm connection available and make search bar visible if so
+                if (hasInternetConnection(connectivityManager))
+                {
+                    requireActivity().runOnUiThread(object : Runnable {
+                        override fun run() {
+                            searchBar.isVisible = true
+                        }
+                    })
+                }
+            }
+
+            // network has been lost
+            override fun onLost(network: Network) {
+                super.onLost(network)
+                // check whether any network still available e.g. if mobile lost but wifi remains
+                if (!hasInternetConnection(connectivityManager))
+                {
+                    // hide search bar on UI thread
+                    requireActivity().runOnUiThread(object : Runnable {
+                        override fun run() {
+                            searchBar.isVisible = false
+                        }
+                    })
+                }
+
+
+            }
+        })
 
         val navBar : BottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView)
         navBar.isVisible = true
@@ -227,6 +285,20 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         googleMap.isMyLocationEnabled = true
 
 
+    }
+
+
+    @SuppressLint("MissingPermission")
+    private fun hasInternetConnection(connectivityManager : ConnectivityManager) : Boolean
+    {
+        val network = connectivityManager.activeNetwork ?: return false
+        val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+
+        return when {
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            else -> false
+        }
     }
 
 
