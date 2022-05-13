@@ -19,7 +19,7 @@ interface TrigPointDao {
 
     @Transaction
     @Query("SELECT * FROM TrigPoint" +
-            " WHERE latitude <= :neLat AND latitude >= :swLat AND longitude <= :neLong AND longitude >= :swLong AND condition != 'Moved'")
+            " WHERE latitude <= :neLat AND latitude >= :swLat AND longitude <= :neLong AND longitude >= :swLong AND condition != 'Moved' AND condition !='Destroyed' AND condition != 'Possibly missing'")
     suspend fun getWithinBounds(neLat: Double, neLong: Double, swLat: Double, swLong: Double) : List<TrigPointDisplay>
 
     @Transaction

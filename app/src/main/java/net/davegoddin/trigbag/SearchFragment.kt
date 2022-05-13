@@ -227,18 +227,9 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         googleMap.isMyLocationEnabled = true
 
 
-//        // initial set all points
-//        GlobalScope.launch(Dispatchers.IO) {
-//            val points = db.trigPointDao().getAll()
-//            withContext(Dispatchers.Main) {
-//                points.forEach {
-//                    clusterManager.addItem(TrigClusterItem(it))
-//                }
-//            }
-//        }
-
-
     }
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
