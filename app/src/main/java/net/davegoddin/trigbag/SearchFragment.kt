@@ -21,6 +21,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PackageManagerCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.findFragment
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.fragment.findNavController
 import net.davegoddin.trigbag.data.AppDatabase
@@ -47,8 +48,9 @@ import java.util.jar.Manifest
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val CAMERA_ZOOM = "cameraZoom"
+private const val CAMERA_LATITUDE = "cameraLatitude"
+private const val CAMERA_LONGITUDE = "cameraLongitude"
 
 /**
  * A simple [Fragment] subclass.
@@ -57,8 +59,9 @@ private const val ARG_PARAM2 = "param2"
  */
 class SearchFragment : Fragment(), OnMapReadyCallback {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var cameraZoom : Float? = 5.85f
+    private var cameraLatitude : Double? = 54.9
+    private var cameraLongitude : Double? = -3.15
 
     lateinit var visibleMarkers : MutableList<Marker>
     var currentZoom : Float? = null
@@ -66,15 +69,27 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
     private lateinit var clusterManager : ClusterManager<TrigClusterItem>
     private lateinit var searchBar : SearchView
 
+    private lateinit var map : GoogleMap
+
 
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
+        if (savedInstanceState == null)
+        {
+            cameraZoom = 5.85f
+            cameraLatitude = 54.9
+            cameraLongitude = -3.15
         }
+        else
+        {
+            cameraZoom = savedInstanceState.getFloat(CAMERA_ZOOM)
+            cameraLatitude = savedInstanceState.getDouble(CAMERA_LATITUDE)
+            cameraLongitude = savedInstanceState.getDouble(CAMERA_LONGITUDE)
+        }
+
     }
 
     @SuppressLint("MissingPermission")
@@ -88,6 +103,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         supportMapFragment.getMapAsync(
             OnMapReadyCallback {
                 onMapReady(it)
+                map = it
             }
         )
 
@@ -158,8 +174,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         fun newInstance(param1: String, param2: String) =
             SearchFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+
                 }
             }
     }
@@ -231,10 +246,10 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
 
 
         var visiblePoints : List<TrigPointDisplay>
-        currentZoom = 5.85f
+        currentZoom = cameraZoom
 
         //initialise default camera position to centre on UK
-        val ukCenter = LatLng(54.9, -3.15)
+        val ukCenter = LatLng(cameraLatitude!!, cameraLongitude!!)
         val ukCamPos =
             CameraPosition.builder().target(ukCenter).zoom(currentZoom!!).bearing(0f).tilt(0f)
                 .build()
@@ -306,6 +321,13 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+
+        outState.putFloat(CAMERA_ZOOM, map.cameraPosition.zoom)
+        outState.putDouble(CAMERA_LATITUDE, map.cameraPosition.target.latitude)
+        outState.putDouble(CAMERA_LONGITUDE, map.cameraPosition.target.longitude)
     }
 
 
