@@ -1,15 +1,17 @@
 package net.davegoddin.trigbag.adapter
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import net.davegoddin.trigbag.R
 import net.davegoddin.trigbag.model.TrigPointDisplay
-import java.text.DecimalFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -44,6 +46,14 @@ class LogItemAdapter (private val fragment: Fragment, val dataset : List<TrigPoi
         avgRating /= ratingCount
 
         holder.txtTitle.text = item.trigPoint.name
+
+        val args : Bundle = Bundle()
+        args.putString("trigPointDisplay", Gson().toJson(item))
+
+        holder.txtTitle.setOnClickListener{
+            fragment.findNavController().navigate(R.id.action_LogFragment_to_detailFragment, args)
+        }
+
         if (sortedVisits.any())
         {
             holder.txtDate.text = LocalDate.ofEpochDay(sortedVisits[0].dateTime!!).format(DateTimeFormatter.ofPattern("dd LLL yyyy"))

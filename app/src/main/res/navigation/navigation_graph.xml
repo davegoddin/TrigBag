@@ -29,7 +29,7 @@
         android:label="Log"
         tools:layout="@layout/fragment_log">
         <action
-            android:id="@+id/action_TrigsFragment_to_detailFragment"
+            android:id="@+id/action_LogFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
     </fragment>
     <fragment
@@ -49,8 +49,9 @@
             app:popUpTo="@id/NearFragment"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_detailFragment_to_TrigsFragment"
+            android:id="@+id/action_detailFragment_to_LogFragment"
             app:destination="@id/LogFragment"
-            app:popUpTo="@id/LogFragment" />
+            app:popUpTo="@id/LogFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>
