@@ -244,7 +244,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
             }
         })
 
-
         var visiblePoints : List<TrigPointDisplay>
         currentZoom = cameraZoom
 
@@ -272,6 +271,10 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         // set event listeners for camera idle
         googleMap.setOnCameraIdleListener(clusterManager)
         googleMap.setOnCameraIdleListener {
+
+            cameraZoom = googleMap.cameraPosition.zoom
+            cameraLatitude = googleMap.cameraPosition.target.latitude
+            cameraLongitude = googleMap.cameraPosition.target.longitude
 
             // boundaries of visible area as lat/lon
             val neLat = googleMap.projection.visibleRegion.latLngBounds.northeast.latitude
